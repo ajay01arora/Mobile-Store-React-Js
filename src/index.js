@@ -4,10 +4,29 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+
+import { createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import thunk from 'redux-thunk';
+import rootReducer from "./reducers";
+import asyncProducts from './actions/products'
+
+
+
+const store = createStore(rootReducer, applyMiddleware(thunk));
+console.log("store.getState()", store.getState());
+store.dispatch(asyncProducts(null));
+store.subscribe(() => console.log("store", store.getState()));
+
+export default store;
+
+
 ReactDOM.render(
+  <Provider store={store}>
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  </React.StrictMode>
+  </Provider>,
   document.getElementById('root')
 );
 

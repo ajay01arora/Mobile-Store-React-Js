@@ -11,3 +11,27 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.card
+{
+  border :1px solid;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.rightSide
+{
+  float: right;
+  margin-top: -30px;
+}
+.sortButton
+{
+  margin-right: 35px;
+  background: center;
+  border: aqua;
+}
+
+.ViewButton
+{
+  margin-right: 100px;
+}
