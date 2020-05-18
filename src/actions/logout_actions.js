@@ -1,8 +1,13 @@
+
 const asyncLogout = () => {
-    return function(dispatch,getState){
-        dispatch({type : 'Logout'})
+    return dispatch=>{       
+      return new Promise(resolve => {
+       setTimeout(() => {
+       resolve(true);
+     return dispatch({type : 'Logout'})
+    }, 500);
+    
+  });
       }
   }
-  
-  
   export default asyncLogout;

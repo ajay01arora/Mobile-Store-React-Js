@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import asyncLogin from "../actions/login_actions";
+import { currentUserSubject } from "../utils/utility";
 
 class LoginForm extends Component
 {
@@ -10,7 +11,8 @@ class LoginForm extends Component
         
         this.state = {
             username : '',
-            password : ''
+            password : '',
+            loginError:false
         }
     }
 
@@ -19,7 +21,7 @@ class LoginForm extends Component
         return (
             <div align="center">
                 <form className="loginForm"  onSubmit={this.onSubmit}>
-
+{this.state.loginError?<div>Failure in Login try again</div>:""}
                     
                     <input type="text" name="username"  placeholder="Enter username" required value={this.state.username}  onChange={this.changeHandler} />
                     <br/>
@@ -34,11 +36,40 @@ class LoginForm extends Component
         );
     }
 
-    onSubmit = event =>
+    onSubmit = async event =>
     {
         event.preventDefault();
         console.log(this.state.username);   
-        this.props.login(this.state.username,this.state.password); 
+        console.log(this.props);   
+         this.props.login(this.state.username,this.state.password)
+         .then(res=>{
+             console.log("res===",res)
+             let loginSuccess=false;
+             if(res.length>0){
+                 res.map(data=>{
+                     console.log("data",data,this.state,this.props)
+                     if(data.username==this.state.username && data.password==this.state.password){
+                         console.log('indide the success true')
+                         localStorage.setItem("userData",JSON.stringify(data));
+                         currentUserSubject.next(data);
+                         loginSuccess=true;
+                        //  return data
+
+                     }
+                     if(loginSuccess){
+                        console.log('indide the success true')
+                         this.props.history.push('/')
+                     }
+                     else{
+                         this.setState({loginError:true})
+                     }
+                 })
+                // localStorage.setItem("rcRoomId", .rcRoomId);
+                // currentUserSubject.next(data);
+      
+
+             }
+         })
     }
 
     
@@ -52,9 +83,9 @@ class LoginForm extends Component
 }
 
 function mapStateToProps(state) {
-    return {
-      
-    };
+
+    console.log("state==",state)
+    return state.loginReducer;
   }
   
   const mapDispatchToProps = dispatch => ({
