@@ -1,16 +1,12 @@
 import React from 'react';
 import './App.css';
-import LoginForm from './components/login';
-import ProductList from './components/products';
+import LoginForm from './components/login_component';
+import ProductList from './components/products_component';
+import ProductView from './components/productView_component';
+import CartComponent from './components/cart_component';
+import asyncLogout from './actions/logout_actions';
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { logout } from "./actions";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import { BrowserRouter as Router,  Switch,  Route,  Link } from "react-router-dom";
 
 
 function App(props) {
@@ -24,11 +20,11 @@ function App(props) {
       </div>
       
       <ul className="nav navbar-nav navbar-right">
-        {props.isLoggedIn &&
+        {!props.isLoggedIn &&
         <li><Link to="/login"><span className="glyphicon glyphicon-log-in"> Login</span></Link></li>
         }
-        {!props.isLoggedIn &&
-        <li onClick={logout}><span className="glyphicon glyphicon-log-out"> Logout</span></li>
+        {props.isLoggedIn &&
+        <li onClick={props.logout}><span className="glyphicon glyphicon-log-out"> Logout</span></li>
         }
         <li><Link to="/cart"><span className="glyphicon  glyphicon-shopping-cart"> Cart </span></Link></li>        
       </ul>
@@ -37,7 +33,9 @@ function App(props) {
     <div>
     <Switch>
            <Route exact path='/login' component={LoginForm}/>
+           <Route exact path='/cart' component={CartComponent}/>
            <Route exact path='/' component={ProductList}/>
+           <Route path="/product/:id" component={ProductView} />
         </Switch>
     </div>
 </div>
@@ -45,13 +43,15 @@ function App(props) {
 
   );
 }
+
 function mapStateToProps(state) {
-  return {
+  return {    
     isLoggedIn: state.LoginReducer.isLoggedIn
-  };
+  }
 }
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ logout }, dispatch);
-}
+
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(asyncLogout())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

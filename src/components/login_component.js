@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { login } from "../actions";
+import asyncLogin from "../actions/login_actions";
 
 class LoginForm extends Component
 {
@@ -54,12 +53,12 @@ class LoginForm extends Component
 
 function mapStateToProps(state) {
     return {
-      user: state.user
+      
     };
   }
   
-  function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ login }, dispatch);
-  }
+  const mapDispatchToProps = dispatch => ({
+    login: (username, password) => dispatch(asyncLogin(username, password))
+  });
   
   export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
