@@ -4,11 +4,18 @@ import asyncGetCartDetails from "../actions/cartDetails_actions";
 import asyncRemoveFromCart from '../actions/RemovedFromCart_actions';
 
 let cartLength = 0;
+let updateStatus = false;
 class CartComponent extends Component
 {
+    constructor(props)
+    {
+        super(props);
+        this.state = {cartDetails : props.cartDetails}
+    }
+
     render()
     {
-        if(this.props.cartDetails !== "no-data" && this.props.cartDetails.length > 0)
+        if((this.state.cartDetails !== null && this.state.cartDetails.length > 0) || updateStatus)
         {
         return (
             <div className="container">
@@ -25,13 +32,13 @@ class CartComponent extends Component
                     </tr>
                     </thead>
                     <tbody>
-                    {this.props.cartDetails.map((cart, index) =>
+                    {this.state.cartDetails.map((cart, index) =>
                     {
                         return  (                        
                         <tr key={index}>
                             <td><img src={cart.image} alt={cart.mobile_name} height="40%"/></td>
                             <td>{cart.mobile_name}</td>
-                            <td><input type="number" id="quantity" name="quantity" min="1" max="5" value={cart.quantity} onChange={(e) => e.setState()} /></td>
+                            <td><input type="number" min="1" max="5" value={cart.quantity} onChange={(e) => this.UpdateCartQuantityHandler(cart , e)} /></td>
                             <td>{cart.price}</td>
                             <td><button className="btn-Danger" onClick={(e) => this.RemoveItemHandler(cart, e)}>Remove</button></td>                            
                         </tr>
@@ -51,29 +58,73 @@ class CartComponent extends Component
         }
     }
 
-    componentDidMount()
+    async componentDidMount()
     {
-        this.props.GetCartDetails(1);
+        if(this.state.cartDetails === null)
+        {
+           await this.props.GetCartDetails(1);
+        }
+
+        if(this.props.cartDetails !== null)
+        {
+            this.setState({
+                cartDetails : this.props.cartDetails
+            });
+        }
+ 
     }
 
     shouldComponentUpdate(nextprops, nextState)
     {
-        if(nextprops.cartDetails !== null || nextprops.cartDetails.length !== cartLength)
+        if(nextprops.cartDetails !== null && nextprops.cartDetails.length !== cartLength)
+        {            
+            return true;
+        }        
+        else if(nextprops.cartDetails == null)
         {
             return true;
-        }else{
+        }
+        else
+        {
             return false;
-        }        
+        }
     }
-    componentDidUpdate()
-    {
-        this.props.GetCartDetails(1);
+
+    getSnapshotBeforeUpdate(nextprops, nextState)
+    {        
+        cartLength = nextprops.cartDetails?.length;
+        return null;
     }
     
-    getSnapshotBeforeUpdate(nextprops, nextState)
+    componentDidUpdate(nextprops)
     {
-        cartLength = nextprops.cartDetails?.length;
+        if(nextprops.cartDetails === null || nextprops.cartDetails.length !== cartLength)
+        {
+            this.props.GetCartDetails(1);
+        }
+        
+        if(this.props.cartDetails != null)
+        {
+            this.setState({cartDetails : this.props.cartDetails});
+        }
     }
+    
+    UpdateCartQuantityHandler(cart , event)
+    {
+        let cartCopy = JSON.parse(JSON.stringify(this.state.cartDetails))
+        cartCopy.forEach(element => {
+            if(element.cart_id == cart.cart_id)
+            {
+                updateStatus = true;                
+                element.quantity = parseInt(event.target.value);
+                element.price *= parseInt(event.target.value); 
+            }
+        });
+        this.setState({
+            cartDetails:cartCopy 
+        }) 
+    }
+ 
 
     RemoveItemHandler(cart)
     {
@@ -84,6 +135,7 @@ class CartComponent extends Component
             "quantity": cart.quantity,
             "id": cart.cart_id
           }
+          cartLength--;
         this.props.RemoveCartItem(data);
     }
 

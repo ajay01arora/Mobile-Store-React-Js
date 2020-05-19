@@ -22,7 +22,7 @@ function CartReducer (state ={}, action)
             return {cart : null};
         default:
             return {
-                cart : "no-data"                
+                cart : null                
               }
     }
 }
