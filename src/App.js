@@ -7,9 +7,49 @@ import CartComponent from './components/cart_component';
 import asyncLogout from './actions/logout_actions';
 import { connect } from "react-redux";
 import { BrowserRouter as Router,  Switch,  Route,  Link } from "react-router-dom";
+import { authenticationService, currentUserSubject } from "./utils/utility";
+import { withStatement } from '@babel/types';
 
 
-function App(props) {
+
+class App extends React.Component{
+  constructor(props){
+    super(props)
+    this.state={
+      currentUser:{}
+    }
+  }
+  async componentWillMount(){
+    await  await authenticationService.currentUser.subscribe(x => {
+      console.log("x======",x);
+      if(x){
+      this.setState({
+        currentUser: x
+      });
+    }
+    else{
+      this.setState({
+        currentUser: x
+      });
+    }
+    })
+  }
+
+   logout=async ()=>{
+    console.log(this.props)
+  // const res=await  
+   this.props.logout()
+    .then(res=>{
+      if(res){
+       console.log(res,this)
+        localStorage.removeItem("userData")
+        currentUserSubject.next(null)
+        window.location.reload()
+      }
+   })
+  }
+
+  render(){
   return (
     <Router>
     <div>
@@ -20,11 +60,8 @@ function App(props) {
       </div>
       
       <ul className="nav navbar-nav navbar-right">
-        {!props.isLoggedIn &&
-        <li><Link to="/login"><span className="glyphicon glyphicon-log-in"> Login</span></Link></li>
-        }
-        {props.isLoggedIn &&
-        <li onClick={props.logout}><span className="glyphicon glyphicon-log-out"> Logout</span></li>
+        {this.state.currentUser ?
+        <li onClick={this.logout}><span className="glyphicon glyphicon-log-out"> Logout</span></li>:<li><Link to="/login"><span className="glyphicon glyphicon-log-in"> Login</span></Link></li>
         }
         <li><Link to="/cart"><span className="glyphicon  glyphicon-shopping-cart"> Cart </span></Link></li>        
       </ul>
@@ -42,6 +79,7 @@ function App(props) {
 </Router>
 
   );
+      }
 }
 
 function mapStateToProps(state) {
