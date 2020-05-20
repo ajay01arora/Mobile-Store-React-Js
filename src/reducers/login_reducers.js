@@ -14,7 +14,7 @@ function LoginReducer (state = initialState, action)
                     isLoggedIn : true
                 }
         case "Logout":
-             localStorage.removeItem('user', null);
+             localStorage.removeItem('user');
                 return state = {
                     user:null,
                     isLoggedIn : false

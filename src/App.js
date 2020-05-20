@@ -55,6 +55,7 @@ static contextType = UserContext;
        console.log(res,this)
         localStorage.removeItem("userData")
         currentUserSubject.next(null)
+        this.context.setUser(null)
         return (<Redirect to="/" />);
       }
    })
