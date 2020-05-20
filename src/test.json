@@ -315,5 +315,12 @@
       "password": "rahul@12345"
     }
   ],
-  "carts": []
+  "carts": [
+    {
+      "user_id": 1,
+      "product_id": 5,
+      "quantity": 1,
+      "id": 1
+    }
+  ]
 }

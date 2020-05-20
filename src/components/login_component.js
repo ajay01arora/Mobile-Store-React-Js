@@ -2,23 +2,30 @@ import React, {Component} from 'react';
 import { connect } from "react-redux";
 import asyncLogin from "../actions/login_actions";
 import { currentUserSubject } from "../utils/utility";
+import UserContext from '../context/userContext';
+
 
 class LoginForm extends Component
 {
-    constructor()
-    {
-        super();
+    // constructor()
+    // {
+        // super();
         
-        this.state = {
+        state = {
             username : '',
             password : '',
             loginError:false
         }
-    }
+
+        static contextType = UserContext;
+    // }
 
     render()
     {
+        // const {   } = this.context;
+      
         return (
+            // <UserContext.Consumer>
             <div align="center">
                 <form className="loginForm"  onSubmit={this.onSubmit}>
 {this.state.loginError?<div>Failure in Login try again</div>:""}
@@ -33,6 +40,7 @@ class LoginForm extends Component
                     <input type="submit" value="Login"/> 
                 </form>
             </div>
+            // </UserContext.Consumer>
         );
     }
 
@@ -47,13 +55,14 @@ class LoginForm extends Component
              let loginSuccess=false;
              if(res.length>0){
                  res.map(data=>{
-                     console.log("data",data,this.state,this.props)
+                     console.log("data",data,this,this.props)
                      if(data.username==this.state.username && data.password==this.state.password){
                          console.log('indide the success true')
                          localStorage.setItem("userData",JSON.stringify(data));
                          currentUserSubject.next(data);
+                         this.context.setUser(data)
                          loginSuccess=true;
-                        //  return data
+                        //   return data
 
                      }
                      if(loginSuccess){

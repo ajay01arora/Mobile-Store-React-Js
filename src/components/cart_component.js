@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import asyncGetCartDetails from "../actions/cartDetails_actions";
 import asyncRemoveFromCart from '../actions/RemovedFromCart_actions';
 import asyncUpdateCart from '../actions/updateCart_actions';
+import loginContext from '../context/userContext';
 
 let cartLength = 0;
 let updateStatus = false;
@@ -20,6 +21,7 @@ class CartComponent extends Component
         {
             let total =0;
         return (
+
             <div className="container">
                 <h2>Carts Details</h2><hr/>
                 <div className="row">

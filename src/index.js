@@ -3,16 +3,23 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { Provider } from 'react-redux';
-import store from '../src/store';
+import { Provider } from "react-redux";
+import store from './store';
+import { UserProvider }  from './context/userContext'
+
+
+
+
 
 
 ReactDOM.render(  
-  <Provider store={store} >
   <React.StrictMode>
-    <App />
-  </React.StrictMode>
-  </Provider>,
+  <Provider  store={store} >
+  <UserProvider >
+  <App  />
+  </UserProvider>
+  </Provider>
+  </React.StrictMode>,
   document.getElementById('root')
 );
 
