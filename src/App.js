@@ -8,8 +8,7 @@ import asyncLogout from './actions/logout_actions';
 import { connect } from "react-redux";
 import { BrowserRouter as Router,  Switch,  Route,  Link, Redirect } from "react-router-dom";
 import { authenticationService, currentUserSubject } from "./utils/utility";
-import store from './store';
-import { Provider } from "react-redux";
+
 
 const ContextA = React.createContext();
 
@@ -52,7 +51,6 @@ class App extends React.Component{
 
   render(){
   return (
-    <Provider store={store} context={ContextA}>
     <Router>
     <div>
       <nav className="navbar navbar-inverse">
@@ -79,9 +77,6 @@ class App extends React.Component{
     </div>
 </div>
 </Router>
-</Provider>
-
-
   );
       }
 }
@@ -96,4 +91,4 @@ const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(asyncLogout())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps, { context: ContextA })(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

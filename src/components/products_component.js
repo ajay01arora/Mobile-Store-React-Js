@@ -119,11 +119,22 @@ function ProductList(props)
         );
     }
     else {
-        return (
-            <div className="Posts">
-                No Posts Found
-            </div>
-        );
+        if(searchText != '')
+        {
+            return (            
+                <div className="Posts">
+                    No product found with this name : {searchText}
+                </div>
+            )
+        }else
+        {
+            return (            
+                <div className="Posts">
+                    No Posts Found
+                </div>
+            )
+            
+        }
     }
 }
 

@@ -14,6 +14,7 @@ function AddToCartComponent(props)
             }
 
             props.addToCart(data);
+            alert("Successfully added!");
     }
 
     return (
