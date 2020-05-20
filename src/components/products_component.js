@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { connect } from "react-redux";
 import  asyncProducts from "../actions/products_actions";
-import  asyncAddToCart from "../actions/cart_actions";
 import {Link} from "react-router-dom";
+import AddToCartComponent from './addtocart_component';
 
 let sortAsc = true;
 let pageNumber = 1;
@@ -48,22 +48,6 @@ function ProductList(props)
         props.GetProducts(apiCall);
     }
 
-    function addToCartHandler(prod_id)
-    {
-        if(localStorage.getItem('user'))
-        {
-           let data =
-            {
-                "user_id" : 1,
-                "product_id": prod_id,
-                "quantity" : 1
-            }
-
-            props.addToCart(data);
-         }
-
-    }
-
     function pagination() 
     {  let ret =[];
         if(props.products.length > 6)
@@ -71,7 +55,8 @@ function ProductList(props)
             totalPages = props.products.length/6;
         }
         for(let i = 1; i <= totalPages; i++){
-        ret.push(<li key={i} className="page-item"><button className="page-link" onClick={(e) => paginationHandler({i}, e)}>{i}</button></li>);
+            let value =i;
+        ret.push(<li key={i} className="page-item"><button className={i === pageNumber ? ' page-link paginationActive' : 'page-link'} onClick={(e) => paginationHandler({i}, e)}>{i}</button></li>);
         }
         return ret
     }
@@ -91,11 +76,10 @@ function ProductList(props)
                 <h2>Mobiles</h2>
                 <div className="rightSide">
                 <button className="sortButton" onClick={sortingClicked}><span className="glyphicon glyphicon-sort"></span></button>
-                <span className="searchBox">
-                <form onSubmit={e => { e.preventDefault(); }}>
+                
+                <form onSubmit={e => { e.preventDefault(); }} className="SearchForm">
                     <input type="text" placeholder="Search" required name="search" value={searchText} onChange={searchHandler}/>
                     </form>
-                </span>
                 </div>
                     <hr/>
                 {posts.map((post,index) => {
@@ -115,7 +99,7 @@ function ProductList(props)
                                 <Link to={{pathname:'/product/'+post.id ,post:post}}><button className="ViewButton btn-primary">View</button></Link>
                                 
                                 {'       '}
-                                    <button className="btn-danger" onClick={(e) => addToCartHandler(post.id, e)}>Add to Cart</button>
+                                    <AddToCartComponent post_id={post.id} />
                                 </div>
                                 </center>
                             </div>
@@ -144,17 +128,13 @@ function ProductList(props)
 }
 
 function mapStateToProps(state) {    
-    if(state.ProductReducer.products !== null)
-    {
-        return {
+    return {
         products: state.ProductReducer.products
         };
     }
-  }
   
   const mapDispatchToProps = dispatch => ({
-    GetProducts: (add) => dispatch(asyncProducts(add)),
-    addToCart : (data) => dispatch(asyncAddToCart(data))
+    GetProducts: (add) => dispatch(asyncProducts(add))
   });
   
   export default connect(mapStateToProps, mapDispatchToProps)(ProductList);

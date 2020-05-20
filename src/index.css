@@ -30,7 +30,14 @@ code {
   background: center;
   border: aqua;
 }
-
+.SearchForm{
+  float: right;
+}
+.paginationActive
+{
+  background:cadetblue;
+  color:black;
+}
 .ViewButton
 {
   margin-right: 100px;

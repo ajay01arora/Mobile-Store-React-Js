@@ -6,11 +6,12 @@ import ProductView from './components/productView_component';
 import CartComponent from './components/cart_component';
 import asyncLogout from './actions/logout_actions';
 import { connect } from "react-redux";
-import { BrowserRouter as Router,  Switch,  Route,  Link } from "react-router-dom";
+import { BrowserRouter as Router,  Switch,  Route,  Link, Redirect } from "react-router-dom";
 import { authenticationService, currentUserSubject } from "./utils/utility";
-import { withStatement } from '@babel/types';
+import store from './store';
+import { Provider } from "react-redux";
 
-
+const ContextA = React.createContext();
 
 class App extends React.Component{
   constructor(props){
@@ -44,16 +45,17 @@ class App extends React.Component{
        console.log(res,this)
         localStorage.removeItem("userData")
         currentUserSubject.next(null)
-        window.location.reload()
+        return (<Redirect to="/" />);
       }
    })
   }
 
   render(){
   return (
+    <Provider store={store} context={ContextA}>
     <Router>
     <div>
-      <nav className="navbar navbar-default">
+      <nav className="navbar navbar-inverse">
     <div className="container-fluid">
       <div className="navbar-header">
       <Link to="/"><span className="navbar-brand">Mobile-Online</span></Link>
@@ -77,6 +79,8 @@ class App extends React.Component{
     </div>
 </div>
 </Router>
+</Provider>
+
 
   );
       }
@@ -92,4 +96,4 @@ const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(asyncLogout())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps, { context: ContextA })(App);

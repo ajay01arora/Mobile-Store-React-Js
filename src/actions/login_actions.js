@@ -8,7 +8,7 @@ const asyncLogin = (username, password) => {
         axios.get(apiCall)
     .then(res =>res.data)
     .then(users => {
-      console.log("logiin data===",users)
+      console.log("login data===",users)
       resolve(users);
      return dispatch({type : 'Login', users , 'username' : username, 'password' : password})
     }).catch(error => {

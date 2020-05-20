@@ -1,6 +1,7 @@
 import React,  {Component, componentDidMount} from 'react';
 import { connect } from "react-redux";
 import  asyncProductDetailsById from "../actions/productDetails_actions";
+import  AddToCartComponent from "./addtocart_component";
 
 
 class ProductView extends Component
@@ -43,7 +44,7 @@ class ProductView extends Component
                             </ul>
                         </div>
                         <div className="col-md-3">
-                            <button>Add to Cart</button>
+                        <AddToCartComponent post_id={this.props.productDetails.id} />
                         </div>
                     </div>   
                 </div>

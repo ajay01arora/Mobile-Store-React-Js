@@ -318,7 +318,7 @@
   "carts": [
     {
       "user_id": 1,
-      "product_id": 4,
+      "product_id": 3,
       "quantity": 1,
       "id": 1
     }

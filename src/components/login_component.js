@@ -82,10 +82,9 @@ class LoginForm extends Component
     }
 }
 
-function mapStateToProps(state) {
-
-    console.log("state==",state)
-    return state.loginReducer;
+function mapStateToProps(state)
+ {
+     return {};
   }
   
   const mapDispatchToProps = dispatch => ({
