@@ -8,32 +8,42 @@ import asyncLogout from './actions/logout_actions';
 import { connect } from "react-redux";
 import { BrowserRouter as Router,  Switch,  Route,  Link, Redirect } from "react-router-dom";
 import { authenticationService, currentUserSubject } from "./utils/utility";
-import store from './store';
-import { Provider } from "react-redux";
+import UserContext   from './context/userContext'
+// const ContextA = React.createContext();
 
-const ContextA = React.createContext();
+// import store from './store';
+// import { Provider } from "react-redux";
+
+
+
+
 
 class App extends React.Component{
-  constructor(props){
-    super(props)
-    this.state={
-      currentUser:{}
-    }
-  }
+  // constructor(props){
+  //   super(props)
+  //   this.state={
+  //     currentUser:{}
+  //   }
+  // }
+
+
+
+  state = {
+    username : '',
+    password : '',
+    loginError:false
+}
+
+static contextType = UserContext;
   async componentWillMount(){
-    await  await authenticationService.currentUser.subscribe(x => {
-      console.log("x======",x);
-      if(x){
-      this.setState({
-        currentUser: x
-      });
-    }
-    else{
-      this.setState({
-        currentUser: x
-      });
-    }
-    })
+    //   await authenticationService.currentUser.subscribe(x => {
+    //   console.log("x======",x);
+     
+    //   this.setState({
+    //     currentUser: x
+    //   });
+  
+    // })
   }
 
    logout=async ()=>{
@@ -50,10 +60,15 @@ class App extends React.Component{
    })
   }
 
+
+  
+
   render(){
+    console.log("context======1",this.context)
   return (
-    <Provider store={store} context={ContextA}>
-    <Router>
+    // <userContext.Provider value={this.state.currentUser}>
+    // <UserProvider value={this.state.currentUser}>
+    <Router  >
     <div>
       <nav className="navbar navbar-inverse">
     <div className="container-fluid">
@@ -62,7 +77,7 @@ class App extends React.Component{
       </div>
       
       <ul className="nav navbar-nav navbar-right">
-        {this.state.currentUser ?
+        {this.context.user ?
         <li onClick={this.logout}><span className="glyphicon glyphicon-log-out"> Logout</span></li>:<li><Link to="/login"><span className="glyphicon glyphicon-log-in"> Login</span></Link></li>
         }
         <li><Link to="/cart"><span className="glyphicon  glyphicon-shopping-cart"> Cart </span></Link></li>        
@@ -79,9 +94,8 @@ class App extends React.Component{
     </div>
 </div>
 </Router>
-</Provider>
-
-
+// </UserProvider>
+// </userContext.Provider >
   );
       }
 }
@@ -96,4 +110,4 @@ const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(asyncLogout())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps, { context: ContextA })(App);
+export default connect(mapStateToProps, mapDispatchToProps )(App);

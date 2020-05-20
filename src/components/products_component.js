@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext } from 'react';
 import { connect } from "react-redux";
 import  asyncProducts from "../actions/products_actions";
 import {Link} from "react-router-dom";
 import AddToCartComponent from './addtocart_component';
+import UserContext from '../context/userContext';
 
 let sortAsc = true;
 let pageNumber = 1;
@@ -11,6 +12,8 @@ let totalPages =0;
 function ProductList(props) 
 {    
     const [searchText, setText] = useState('');
+    const user = useContext(UserContext)
+    console.log("context",user)
     
     useEffect(() => {
         let post = props;
@@ -69,11 +72,12 @@ function ProductList(props)
        
     let posts  = props.products;
     if (posts != null && posts.length > 0) {
+       
         return (
-            
+            // <UserContext.Consumer>
             <div className="container">
                 <div className="container">
-                <h2>Mobiles</h2>
+                <h2>Mobiles </h2>
                 <div className="rightSide">
                 <button className="sortButton" onClick={sortingClicked}><span className="glyphicon glyphicon-sort"></span></button>
                 
@@ -116,6 +120,7 @@ function ProductList(props)
                  </center>
                  
             </div>
+            // </UserContext.Consumer>
         );
     }
     else {
