@@ -2,13 +2,14 @@ import axios from 'axios';
 
 const asyncAddToCart = (data) => {
   return function(dispatch,getState){
+    let shouldAddtoCart = true;
       const apiCall = 'http://localhost:3001/carts';
       axios.get(apiCall)
       .then(res => res.data)
       .then(carts => {
         if(carts.length > 0)
         {
-          let shouldAddtoCart = true;
+          
         carts.map(cart =>
           {
             if(cart.user_id === data.user_id && cart.product_id == data.product_id)
@@ -24,15 +25,17 @@ const asyncAddToCart = (data) => {
                  
               }
               return updateCart(updatedApi, updatedData, dispatch);
-            }   
-            if(shouldAddtoCart)
-            {
-              return addToCart(apiCall, data, dispatch)
-            }         
+            }          
           })
         }else{
           return addToCart(apiCall, data, dispatch)
-        }          
+        }         
+        if(shouldAddtoCart)
+        {
+          return addToCart(apiCall, data, dispatch)
+        }
+        
+        
         })
         
   }

@@ -7,6 +7,7 @@ import loginContext from '../context/userContext';
 
 let cartLength = 0;
 let updateStatus = false;
+let tempCartDetails  = null;
 class CartComponent extends Component
 {
     constructor(props)
@@ -19,7 +20,7 @@ class CartComponent extends Component
     {
         if((this.state.cartDetails !== null && this.state.cartDetails.length > 0) || updateStatus)
         {
-            let total =0;
+        let total =0;
         return (
 
             <div className="container">
@@ -84,11 +85,7 @@ class CartComponent extends Component
 
     shouldComponentUpdate(nextprops, nextState)
     {
-        if(nextprops.cartDetails !== null && nextprops.cartDetails.length !== cartLength)
-        {  
-            return true;
-        }        
-        else if(nextprops.cartDetails == null)
+        if(nextprops.cartDetails !== tempCartDetails)
         {
             return true;
         }
@@ -97,21 +94,19 @@ class CartComponent extends Component
             return true;
         }
         else{
-            updateStatus =false;
             return false;
         }
     }
 
     getSnapshotBeforeUpdate(previousprops, previousState)
     {        
-        cartLength = previousprops.cartDetails?.length;
-        return null;
+       tempCartDetails = previousprops.cartDetails;
     }
     
     componentDidUpdate(nextprops)
     {
-        updateStatus =false;
-        if(this.props.cartDetails === null || this.props.cartDetails.length !== cartLength)
+        updateStatus = false;
+        if(this.props.cartDetails === null)
         {
             this.props.GetCartDetails(1);
         }

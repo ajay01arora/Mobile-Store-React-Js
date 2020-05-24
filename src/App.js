@@ -1,22 +1,15 @@
 import React from 'react';
 import './App.css';
 import LoginForm from './components/login_component';
-import ProductList from './components/products_component';
+import Product from './components/products_component';
 import ProductView from './components/productView_component';
 import CartComponent from './components/cart_component';
 import asyncLogout from './actions/logout_actions';
 import { connect } from "react-redux";
 import { BrowserRouter as Router,  Switch,  Route,  Link, Redirect } from "react-router-dom";
-import { authenticationService, currentUserSubject } from "./utils/utility";
+import { currentUserSubject } from "./utils/utility";
 import UserContext   from './context/userContext'
-// const ContextA = React.createContext();
-
-// import store from './store';
-// import { Provider } from "react-redux";
-
-
-
-
+import {Dropdown}from 'react-bootstrap';
 
 class App extends React.Component{
   // constructor(props){
@@ -56,7 +49,7 @@ static contextType = UserContext;
         localStorage.removeItem("userData")
         currentUserSubject.next(null)
         this.context.setUser(null)
-        return (<Redirect to="/" />);
+       //window.location.reload();
       }
    })
   }
@@ -79,7 +72,17 @@ static contextType = UserContext;
       
       <ul className="nav navbar-nav navbar-right">
         {this.context.user ?
-        <li onClick={this.logout}><span className="glyphicon glyphicon-log-out"> Logout</span></li>:<li><Link to="/login"><span className="glyphicon glyphicon-log-in"> Login</span></Link></li>
+        <Dropdown>
+        <Dropdown.Toggle className="dropdownLogout" variant="secondary" id="dropdown-basic">
+          <img src="https://cdn5.vectorstock.com/i/1000x1000/73/39/user-icon-male-person-symbol-profile-avatar-vector-20787339.jpg" alt="UserImage" width="20" height="20" />
+        </Dropdown.Toggle>      
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={this.logout}><span className="glyphicon glyphicon-log-out"> Logout</span></Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+  
+    :        
+        <li><Link to="/login"><span className="glyphicon glyphicon-log-in"> Login</span></Link></li>
         }
         <li><Link to="/cart"><span className="glyphicon  glyphicon-shopping-cart"> Cart </span></Link></li>        
       </ul>
@@ -89,7 +92,8 @@ static contextType = UserContext;
     <Switch>
            <Route exact path='/login' component={LoginForm}/>
            <Route exact path='/cart' component={CartComponent}/>
-           <Route exact path='/' component={ProductList}/>
+           <Route exact path='/' component={Product}/>
+           <Route exact path='/products' component={Product}/>
            <Route path="/product/:id" component={ProductView} />
         </Switch>
     </div>

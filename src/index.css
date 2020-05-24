@@ -42,3 +42,10 @@ code {
 {
   margin-right: 100px;
 }
+
+.dropdownLogout
+{
+  position: absolute;
+  margin-left: -100px;
+  margin-top: 5px;
+}

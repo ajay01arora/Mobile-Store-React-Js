@@ -7,7 +7,6 @@ import asyncProducts from './actions/products_actions'
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 console.log("store.getState()", store.getState());
-store.dispatch(asyncProducts(null));
 store.subscribe(() => console.log("store", store.getState()));
 
 export default store;

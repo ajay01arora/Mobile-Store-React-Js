@@ -1,39 +1,40 @@
-import React, {useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext, Component } from 'react';
 import { connect } from "react-redux";
 import  asyncProducts from "../actions/products_actions";
 import {Link} from "react-router-dom";
 import AddToCartComponent from './addtocart_component';
-import UserContext from '../context/userContext';
 
 let sortAsc = true;
 let pageNumber = 1;
 let totalPages =0;
 
-function ProductList(props) 
-{    
-    const [searchText, setText] = useState('');
-    const user = useContext(UserContext)
-    console.log("context",user)
-    
-    useEffect(() => {
-        let post = props;
-        post.GetProducts('?_limit=6');
-    }, []);
 
-    function sortingClicked()
+class  Product extends Component 
+{    
+   constructor(props)
+    {
+        super(props);
+        
+        this.state = {
+            products : this.props.products,
+            searchText : ''
+        }
+    }
+
+    sortingClicked = event =>
     {
         if(sortAsc)
         {
             sortAsc = false;
-            props.GetProducts('?_sort=price&_order=asc');
+            this.props.GetProducts('?_sort=price&_order=asc');
         }else
         {
             sortAsc =true;
-            props.GetProducts('?_sort=price&_order=desc'); 
+            this.props.GetProducts('?_sort=price&_order=desc'); 
         }       
     }
 
-    function paginationHandler(value)
+    paginationHandler(value)
     {
         if(value === "Next" && pageNumber < 4)
         {
@@ -48,62 +49,76 @@ function ProductList(props)
             pageNumber = value.i;
         }
         let apiCall = '?_page='+pageNumber+'&_limit=6';
-        props.GetProducts(apiCall);
+        this.props.GetProducts(apiCall);
     }
 
-    function pagination() 
+    pagination = event => 
     {  let ret =[];
-        if(props.products.length > 6)
+        if(this.props.products?.length > 6)
         {
-            totalPages = props.products.length/6;
+            totalPages = this.props.products.length/6;
         }
         for(let i = 1; i <= totalPages; i++){
             let value =i;
-        ret.push(<li key={i} className="page-item"><button className={i === pageNumber ? ' page-link paginationActive' : 'page-link'} onClick={(e) => paginationHandler({i}, e)}>{i}</button></li>);
+        ret.push(<li key={i} className="page-item"><button className={i === pageNumber ? ' page-link paginationActive' : 'page-link'} onClick={(e) => this.paginationHandler({i}, e)}>{i}</button></li>);
         }
         return ret
     }
-    function searchHandler(event)
+    searchHandler = event =>
     {
         event.preventDefault();
-        setText(event.target.value);
-        props.GetProducts('?name_like='+searchText+'&_limit=6');
+        this.setState({
+            searchText : event.target.value
+        });
+        this.props.GetProducts('?name_like='+this.state.searchText+'&_limit=6');
     }
-       
-    let posts  = props.products;
-    if (posts != null && posts.length > 0) {
-       
+     
+    componentDidMount()
+    {
+        this.props.GetProducts(null);
+        this.props.GetProducts('?_limit=6');
+    }
+
+    render()
+    {
+    let products  = this.props.products;
+    if(products?.length === 0)
+    {
+        products =null;
+    }
         return (
             // <UserContext.Consumer>
             <div className="container">
                 <div className="container">
                 <h2>Mobiles </h2>
                 <div className="rightSide">
-                <button className="sortButton" onClick={sortingClicked}><span className="glyphicon glyphicon-sort"></span></button>
+                <button className="sortButton" onClick={this.sortingClicked}><span className="glyphicon glyphicon-sort"></span></button>
                 
                 <form onSubmit={e => { e.preventDefault(); }} className="SearchForm">
-                    <input type="text" placeholder="Search" required name="search" value={searchText} onChange={searchHandler}/>
+                    <input type="text" placeholder="Search" required name="search" value={this.state.searchText} onChange={this.searchHandler}/>
                     </form>
                 </div>
                     <hr/>
-                {posts.map((post,index) => {
+                {this.state.searchText !== '' &&                
+                <h4>Searching Text : {this.state.searchText}</h4>
+                }
+                {products !== null && products.map((product,index) => {
                     return (
                         <div className="col-md-4" key={index}>
                             <div className="card">
                                 <center>
                                 <div className="card-header">
-                                    <img src={post.image} alt={post.name} height="200px" />
+                                    <img src={product.image} alt={product.name} height="200px" />
                                 </div>
                                 <div className="card-body">
                                     
-                                    <h3>{post.name}</h3>                                   
-                                   <h4> ₹ {post.price} </h4>
+                                    <h3>{product.name}</h3>                                   
+                                   <h4> ₹ {product.price} </h4>
                                 </div>
                                 <div className="card-footer">
-                                <Link to={{pathname:'/product/'+post.id ,post:post}}><button className="ViewButton btn-primary">View</button></Link>
-                                
+                                <Link to={{pathname:'/product/'+product.id ,product:product}}><button className="ViewButton btn-primary">View</button></Link>                                
                                 {'       '}
-                                    <AddToCartComponent post_id={post.id} />
+                                    <AddToCartComponent post_id={product.id} />
                                 </div>
                                 </center>
                             </div>
@@ -111,35 +126,23 @@ function ProductList(props)
                     );
                 })}
                 </div>
+                {products !== null && this.state.searchText === '' &&
                 <center>
                     <ul className="pagination">
-                    {pageNumber !== 1 &&<li className="page-item"><button className="page-link" onClick={(e) => paginationHandler("Previous", e)} >Previous</button></li>}                      
-                    {pagination()}
-                    {pageNumber !== 4 &&<li className="page-item"><button className="page-link" onClick={(e) => paginationHandler("Next", e)}>Next</button></li> }
+                    {pageNumber !== 1 &&<li className="page-item"><button className="page-link" onClick={(e) => this.paginationHandler("Previous", e)} >Previous</button></li>}                      
+                    {this.pagination()}
+                    {pageNumber !== 4 &&<li className="page-item"><button className="page-link" onClick={(e) => this.paginationHandler("Next", e)}>Next</button></li> }
                     </ul>
                  </center>
+                }
+
+                 {products === null &&
+                    <h4>No product found!</h4>
+                 }
                  
             </div>
             // </UserContext.Consumer>
         );
-    }
-    else {
-        if(searchText != '')
-        {
-            return (            
-                <div className="Posts">
-                    No product found with this name : {searchText}
-                </div>
-            )
-        }else
-        {
-            return (            
-                <div className="Posts">
-                    No Posts Found
-                </div>
-            )
-            
-        }
     }
 }
 
@@ -153,4 +156,4 @@ function mapStateToProps(state) {
     GetProducts: (add) => dispatch(asyncProducts(add))
   });
   
-  export default connect(mapStateToProps, mapDispatchToProps)(ProductList);
+  export default connect(mapStateToProps, mapDispatchToProps)(Product);

@@ -4,75 +4,83 @@ import  asyncProductDetailsById from "../actions/productDetails_actions";
 import  asyncProducts from "../actions/products_actions";
 import  AddToCartComponent from "./addtocart_component";
 
-
+let tempProduct = null;
+let tempProductDetails = null;
 class ProductView extends Component
 {   
-    constructor ()
+    constructor (props)
     {
-        super();
+        super(props);
         this.state =
         {
-
+            product : this.props.product,
+            productDetails : this.props.productDetails
         }
     }
     componentDidMount()
     {
         this.props.getProductDetailsById(this.props.match.params.id);
-        if(this.props.location.post === null)
+        if(this.props.location.product === undefined)
         {
             this.props.GetProducts('/'+this.props.match.params.id);
+        }
+        else
+        {
+            this.setState({
+                product : this.props.location.product
+            })
         }
     }
 
     render()
     {
              
-        if(this.props.productDetails != null)
+        if(this.state.productDetails != null && this.state.product != null)
         {
-            let post = this.props.location.post ? this.props.location.post :  this.props.products[0];   
+              
             return (
                 <div className="container">
                     <div className="row">
                         <div className="col-md-3">
-                        <img src={post.image } alt={post.name} height="200px" />
+                        <img src={this.state.product.image } alt={this.state.product.name} height="200px" />
                         </div>
                         <div className="col-md-5">
-                            <h3>{post.name}</h3>
+                            <h3>{this.state.product.name}</h3>
                             <table class="table table-hover">
                                 <tbody>
                                     <tr>
                                         <th>Price</th>
-                                        <td>{post.price}</td>
+                                        <td>{this.state.product.price}</td>
                                     </tr>
                                     <tr>
                                         <th>ModelNumber : </th>
-                                        <td>{this.props.productDetails.model_number}</td>
+                                        <td>{this.state.productDetails.model_number}</td>
                                     </tr>
                                     <tr>
                                         <th>Color</th>
-                                        <td>{this.props.productDetails.color}</td>
+                                        <td>{this.state.productDetails.color}</td>
                                     </tr>
                                     <tr>
                                         <th>Scrren size : </th>
-                                        <td>{this.props.productDetails.screen_size}</td>
+                                        <td>{this.state.productDetails.screen_size}</td>
                                     </tr>
                                     <tr>
                                         <th>Operating System</th>
-                                        <td>{this.props.productDetails.os}</td>
+                                        <td>{this.state.productDetails.os}</td>
                                     </tr>
                                     <tr>
                                         <th>RAM: </th>
-                                        <td>{this.props.productDetails.Ram}</td>
+                                        <td>{this.state.productDetails.Ram}</td>
                                     </tr>
                                     <tr>
                                         <th>Storage: </th>
-                                        <td>{this.props.productDetails.Storage}</td>
+                                        <td>{this.state.productDetails.Storage}</td>
                                     </tr>
                                 </tbody>
                             </table>                            
                         </div>
                         <div className="col-md-3">
-                        <AddToCartComponent post_id={this.props.productDetails.id} />
+                        <AddToCartComponent post_id={this.state.productDetails.id} />
                         </div>
                     </div>   
                 </div>
@@ -82,13 +90,58 @@ class ProductView extends Component
             return <div><h1>Fetching...</h1></div>;
         }
     }    
+
+    shouldComponentUpdate(nextprops, nextState)
+    {
+        if(nextprops.product !== tempProduct)
+        {
+            return true;
+        }
+        else if(nextprops.productDetails !== tempProductDetails)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    getSnapshotBeforeUpdate(previousprops, previousState)
+    {        
+       tempProduct = previousprops.product;
+       tempProductDetails = previousprops.productDetails;
+    }
+    
+    componentDidUpdate(nextprops)
+    {        
+        if(this.props.product != null)
+        {
+                if(this.props.location.product === undefined)
+                {
+                    this.setState({
+                        product : this.props.product
+                    })
+                }
+                else
+                {
+                    this.setState({
+                        product : this.props.location.product
+                    })
+                }
+        }
+
+        if(this.props.productDetails != null)
+        {
+            this.setState({productDetails : this.props.productDetails});
+        }
+    }
 }
 
 
 function mapStateToProps(state) {
     return {
       productDetails: state.ProductDetailsReducer.productDetails,
-      products: state.ProductReducer.products
+      product: state.ProductReducer.products
 
     };
   }
