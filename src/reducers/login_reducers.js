@@ -7,20 +7,49 @@ function LoginReducer (state = initialState, action)
 {
     switch(action?.type){
         case "Login":
-               let user = action.users.filter(user => user.username === action.username && user.password === action.password)
-               localStorage.setItem('user', JSON.stringify(user));
-                return state = {
-                    user:user,
-                    isLoggedIn : true
+               if(action.login.length > 0)
+               {
+                   let user = action.login[0];
+                    localStorage.setItem('user',JSON.stringify(user));                    
+                    return state = 
+                    {
+                        isLoggedIn : true,
+                        error : false
+                    }                    
+               }
+               else
+                {
+                    return state = 
+                    {
+                        isLoggedIn : false,
+                        error : true
+                    }
                 }
         case "Logout":
              localStorage.removeItem('user');
                 return state = {
-                    user:null,
-                    isLoggedIn : false
+                    isLoggedIn : false,
+                    error : false
                 }
         default:
-            return state;
+            let user = localStorage.getItem('user');
+            if(user !== null)
+            {
+                return state = 
+                {
+                    isLoggedIn : true,
+                    error : false
+                }                    
+           }
+           else
+            {
+                return state = 
+                {
+                    isLoggedIn : false,
+                    error : false
+                }
+            }
+            
     }
 }
 

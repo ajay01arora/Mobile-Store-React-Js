@@ -8,10 +8,6 @@ import store from './store';
 import { UserProvider }  from './context/userContext'
 
 
-
-
-
-
 ReactDOM.render(  
   <React.StrictMode>
   <Provider  store={store} >

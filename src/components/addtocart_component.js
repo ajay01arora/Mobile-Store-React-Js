@@ -6,9 +6,15 @@ function AddToCartComponent(props)
 {
     function addToCartHandler(prod_id)
     {
+        let tempUserId = localStorage.getItem('tempUserId');
+        if( tempUserId === null)
+        {
+            tempUserId = Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem('tempUserId',tempUserId)
+        }
            let data =
             {
-                "user_id" : 1,
+                "user_id" : tempUserId,
                 "product_id": prod_id,
                 "quantity" : 1
             }

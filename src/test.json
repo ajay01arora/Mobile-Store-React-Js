@@ -119,6 +119,30 @@
       "name": "Honor 9N Pro",
       "image": "https://images-eu.ssl-images-amazon.com/images/I/41HMXBkf6nL._AC_US240_FMwebp_QL65_.jpg",
       "price": 11999
+    },
+    {
+      "id": 21,
+      "name": "Honor 8X",
+      "image": "https://images-eu.ssl-images-amazon.com/images/I/41x7noG39wL._AC_US240_FMwebp_QL65_.jpg",
+      "price": 9999
+    },
+    {
+      "id": 22,
+      "name": "Honor 9N",
+      "image": "https://images-eu.ssl-images-amazon.com/images/I/41HMXBkf6nL._AC_US240_FMwebp_QL65_.jpg",
+      "price": 11999
+    },
+    {
+      "id": 23,
+      "name": "OnePlus 7T Pro",
+      "image": "https://images-eu.ssl-images-amazon.com/images/I/31eAeTNWtOL._AC_US240_FMwebp_QL65_.jpg",
+      "price": 47999
+    },
+    {
+      "id": 24,
+      "name": "Redmi Note 8",
+      "image": "https://m.media-amazon.com/images/I/61Z-7BVaFUL._AC_UY327_FMwebp_QL65_.jpg",
+      "price": 11499
     }
   ],
   "product_details": [
@@ -301,6 +325,42 @@
       "os": "Andriod",
       "Ram": "4GB",
       "Storage": "128GB"
+    },
+    {
+      "id": 21,
+      "model_number": "OnePlus 7F pro",
+      "color": "Black",
+      "screen_size": "5 inch",
+      "os": "Andriod",
+      "Ram": "4GB",
+      "Storage": "128GB"
+    },
+    {
+      "id": 22,
+      "model_number": "OnePlus 7F pro",
+      "color": "Black",
+      "screen_size": "5 inch",
+      "os": "Andriod",
+      "Ram": "4GB",
+      "Storage": "128GB"
+    },
+    {
+      "id": 23,
+      "model_number": "OnePlus 7F pro",
+      "color": "Black",
+      "screen_size": "5 inch",
+      "os": "Andriod",
+      "Ram": "4GB",
+      "Storage": "128GB"
+    },
+    {
+      "id": 24,
+      "model_number": "OnePlus 7F pro",
+      "color": "Black",
+      "screen_size": "5 inch",
+      "os": "Andriod",
+      "Ram": "4GB",
+      "Storage": "128GB"
     }
   ],
   "users": [
@@ -319,8 +379,20 @@
     {
       "user_id": 1,
       "product_id": 1,
-      "quantity": 3,
+      "quantity": 2,
       "id": 1
+    },
+    {
+      "user_id": 1,
+      "product_id": 20,
+      "quantity": 1,
+      "id": 2
+    },
+    {
+      "user_id": 2,
+      "product_id": 1,
+      "quantity": 1,
+      "id": 3
     }
   ]
 }

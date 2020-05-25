@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import asyncGetCartDetails from "../actions/cartDetails_actions";
 import asyncRemoveFromCart from '../actions/RemovedFromCart_actions';
 import asyncUpdateCart from '../actions/updateCart_actions';
-import loginContext from '../context/userContext';
+import {UserContext} from '../App';
 
 let cartLength = 0;
 let updateStatus = false;
@@ -22,7 +22,9 @@ class CartComponent extends Component
         {
         let total =0;
         return (
-
+            <UserContext.Consumer>
+            {(user) => {  
+                return(         
             <div className="container">
                 <h2>Carts Details</h2><hr/>
                 <div className="row">
@@ -46,7 +48,7 @@ class CartComponent extends Component
                             <td><img src={cart.image} alt={cart.mobile_name} height="40%"/></td>
                             <td>{cart.mobile_name}</td>
                             <td><input type="number" min="1" max="5" value={cart.quantity} onChange={(e) => this.UpdateCartQuantityHandler(cart , e)} /></td>
-                            <td>{cart.price*cart.quantity}</td>
+                            <td>₹ {cart.price*cart.quantity}</td>
                             <td><button className="btn-Danger" onClick={(e) => this.RemoveItemHandler(cart, e)}>Remove</button></td>                            
                         </tr>
                         );         
@@ -54,17 +56,19 @@ class CartComponent extends Component
                     )}  
                     <tr>
                         <td colSpan="4"><b>Total</b></td> 
-                        <td>{total}</td>     
+                        <td>₹ {total}</td>     
                     </tr>               
                     </tbody>
                 </table>
                 </div>
                 <div className="row">
                     <div className="col-md-offset-10">
-                        <button className="btn-primary">Place Order</button>
+                        <button className="btn-primary" onClick={(e) => this.placeOrderHandler(user, e)}>Place Order</button>
                     </div>
                 </div>
-            </div>           
+            </div>)
+            }}
+            </UserContext.Consumer>     
         );
         }else{
             return (
@@ -78,7 +82,13 @@ class CartComponent extends Component
     {
         if(this.state.cartDetails === null)
         {
-            this.props.GetCartDetails(1);
+            let tempUserId = localStorage.getItem('tempUserId');
+            if( tempUserId === null)
+            {
+                tempUserId = Math.floor(1000 + Math.random() * 9000);
+                localStorage.setItem('tempUserId',tempUserId)
+            }            
+            this.props.GetCartDetails(tempUserId);
         }
  
     }
@@ -108,7 +118,13 @@ class CartComponent extends Component
         updateStatus = false;
         if(this.props.cartDetails === null)
         {
-            this.props.GetCartDetails(1);
+            let tempUserId = localStorage.getItem('tempUserId');
+            if( tempUserId === null)
+            {
+                tempUserId = Math.floor(1000 + Math.random() * 9000);
+                localStorage.setItem('tempUserId',tempUserId)
+            }
+            this.props.GetCartDetails(tempUserId);
         }
         
         if(this.props.cartDetails != null)
@@ -128,8 +144,14 @@ class CartComponent extends Component
                 updateStatus = true;                
                 element.quantity = parseInt(event.target.value);
                 element.price *= parseInt(event.target.value);
+                let tempUserId = localStorage.getItem('tempUserId');
+                if( tempUserId === null)
+                {
+                    tempUserId = Math.floor(1000 + Math.random() * 9000);
+                    localStorage.setItem('tempUserId',tempUserId)
+                }
                 data =  {               
-                    "user_id": 1,
+                    "user_id": tempUserId,
                     "product_id": cart.product_id,
                     "quantity": parseInt(event.target.value),
                     "id": cart.cart_id
@@ -143,13 +165,40 @@ class CartComponent extends Component
         }) 
 
     }
+
+    placeOrderHandler(user)
+    {
+        if(user)
+        {
+            let orderNumber = Math.floor(1000 + Math.random() * 9000);
+            if(this.state.cartDetails !== null)
+            {
+              this.state.cartDetails.forEach(element => {
+                  this.RemoveItemHandler(element);
+              });  
+            }
+            alert("Your order has been placed successfully. and your order id is: ORD"+orderNumber);
+            this.props.history.push('/')
+        }
+        else
+        {
+            alert("You must logged in to place this order.");
+        }
+        
+    }
  
 
     RemoveItemHandler(cart)
     {
+        let tempUserId = localStorage.getItem('tempUserId');
+        if( tempUserId === null)
+        {
+            tempUserId = Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem('tempUserId',tempUserId)
+        }
         let data =
         {
-            "user_id": 1,
+            "user_id": tempUserId,
             "product_id": cart.product_id,
             "quantity": cart.quantity,
             "id": cart.cart_id

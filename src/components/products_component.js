@@ -36,7 +36,7 @@ class  Product extends Component
 
     paginationHandler(value)
     {
-        if(value === "Next" && pageNumber < 4)
+        if(value === "Next" && pageNumber < totalPages/6)
         {
             pageNumber++;
         }
@@ -95,7 +95,7 @@ class  Product extends Component
                 <button className="sortButton" onClick={this.sortingClicked}><span className="glyphicon glyphicon-sort"></span></button>
                 
                 <form onSubmit={e => { e.preventDefault(); }} className="SearchForm">
-                    <input type="text" placeholder="Search" required name="search" value={this.state.searchText} onChange={this.searchHandler}/>
+                    <input type="text" placeholder="Search" required className="searchTextbox" value={this.state.searchText} onChange={this.searchHandler}/>
                     </form>
                 </div>
                     <hr/>
@@ -144,6 +144,16 @@ class  Product extends Component
             // </UserContext.Consumer>
         );
     }
+
+    componentDidUpdate()
+    {
+        if(this.props.products === null)
+        {
+            this.props.GetProducts(null);
+            this.props.GetProducts('?_limit=6');
+        }
+    }
+
 }
 
 function mapStateToProps(state) {    

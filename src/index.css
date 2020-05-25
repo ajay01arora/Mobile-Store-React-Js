@@ -32,6 +32,7 @@ code {
 }
 .SearchForm{
   float: right;
+  margin: -40px;
 }
 .paginationActive
 {

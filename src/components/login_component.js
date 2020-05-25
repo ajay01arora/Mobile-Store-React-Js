@@ -1,38 +1,32 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import asyncLogin from "../actions/login_actions";
-import { currentUserSubject } from "../utils/utility";
-import UserContext from '../context/userContext';
+import './login_component.css';
 
-
+let changeStatus = false;
 class LoginForm extends Component
 {
-    // constructor()
-    // {
-        // super();
+    constructor(props)
+    {
+        super(props);
         
-        state = {
+        this.state = {
             username : '',
             password : '',
             loginError:false
         }
 
-        static contextType = UserContext;
-    // }
+    }
 
     render()
-    {
-        // const {   } = this.context;
-      
+    {      
         return (
-            // <UserContext.Consumer>
-            <div align="center">
+            <div className="login" align="center">
                 <form className="loginForm"  onSubmit={this.onSubmit}>
-{this.state.loginError?<div>Failure in Login try again</div>:""}
+                    {this.state.loginError?<div>Failure in Login try again</div>:""}
                     
                     <input type="text" name="username"  placeholder="Enter username" required value={this.state.username}  onChange={this.changeHandler} />
                     <br/>
-
                     
                     <input type="password" name="password" placeholder='Enter password' required value={this.state.password} onChange={this.changeHandler}/>
                     <br/>
@@ -40,50 +34,52 @@ class LoginForm extends Component
                     <input type="submit" value="Login"/> 
                 </form>
             </div>
-            // </UserContext.Consumer>
         );
     }
 
     onSubmit = async event =>
     {
         event.preventDefault();
-        console.log(this.state.username);   
-        console.log(this.props);   
-         this.props.login(this.state.username,this.state.password)
-         .then(res=>{
-             console.log("res===",res)
-             let loginSuccess=false;
-             if(res.length>0){
-                 res.map(data=>{
-                     console.log("data",data,this,this.props)
-                     if(data.username==this.state.username && data.password==this.state.password){
-                         console.log('indide the success true')
-                         localStorage.setItem("userData",JSON.stringify(data));
-                         currentUserSubject.next(data);
-                         this.context.setUser(data)
-                         loginSuccess=true;
-                        //   return data
-
-                     }
-                     if(loginSuccess){
-                        console.log('indide the success true')
-                         this.props.history.push('/')
-                     }
-                     else{
-                         this.setState({loginError:true})
-                     }
-                 })
-                // localStorage.setItem("rcRoomId", .rcRoomId);
-                // currentUserSubject.next(data);
-      
-
-             }
-         })
+        console.log('username: '+this.state.username);   
+        console.log('password: '+this.state.password);   
+        this.props.login(this.state.username,this.state.password)
     }
 
+    shouldComponentUpdate(nexprops, nextState)
+    {
+        if(this.props.loggedResult !== nexprops.loggedResult || changeStatus)
+        {
+            return true
+        }
+        else{
+            return false;
+        }
+    }
+
+    getSnapshotBeforeUpdate()
+    {
+        return {};
+    }
     
+    componentDidUpdate()
+    {
+        
+        if(this.props.loggedResult.error && changeStatus)
+        {
+            changeStatus =false;
+            this.setState({
+                loginError : true
+            })
+        }
+        if(this.props.loggedResult.isLoggedIn)
+        {
+            this.props.history.push('/');
+        }
+    }
+
     changeHandler = event =>
     {
+        changeStatus = true;
         this.setState({
             username : event.target.name === "username" ? event.target.value : this.state.username,
             password : event.target.name === "password" ? event.target.value : this.state.password
@@ -93,7 +89,9 @@ class LoginForm extends Component
 
 function mapStateToProps(state)
  {
-     return {};
+     return {
+         loggedResult : state.LoginReducer
+     };
   }
   
   const mapDispatchToProps = dispatch => ({

@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import  asyncProductDetailsById from "../actions/productDetails_actions";
 import  asyncProducts from "../actions/products_actions";
 import  AddToCartComponent from "./addtocart_component";
+import UserContext from '../context/userContext';
 
 let tempProduct = null;
 let tempProductDetails = null;
@@ -39,6 +40,11 @@ class ProductView extends Component
         {
               
             return (
+                <UserContext.Consumer>
+                {(isLoggedIn)=> {
+                    console.log(isLoggedIn);
+                
+                return(
                 <div className="container">
                     <div className="row">
                         <div className="col-md-3">
@@ -50,7 +56,7 @@ class ProductView extends Component
                                 <tbody>
                                     <tr>
                                         <th>Price</th>
-                                        <td>{this.state.product.price}</td>
+                                        <td>₹ {this.state.product.price}</td>
                                     </tr>
                                     <tr>
                                         <th>ModelNumber : </th>
@@ -84,6 +90,9 @@ class ProductView extends Component
                         </div>
                     </div>   
                 </div>
+                )
+            }}
+                </UserContext.Consumer>
             );
         }else
         {

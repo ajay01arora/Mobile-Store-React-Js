@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const asyncGetCartDetails = (data) => {
+const asyncGetCartDetails = (userId) => {
     return function(dispatch,getState){
-        const apiCall = 'http://localhost:3001/carts';
+      const apiCall = 'http://localhost:3001/carts?user_id='+userId;
       axios.get(apiCall)
       .then(res =>res.data)
       .then(carts => {
-        
+
         let data = 'id=0';
         carts.map((cart) =>
         {
